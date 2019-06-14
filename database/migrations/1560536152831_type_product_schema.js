@@ -5,8 +5,17 @@ const Schema = use('Schema')
 
 class TypeProductSchema extends Schema {
   up () {
-    this.create('type_products', (table) => {
+    this.create('type_products', table => {
       table.increments()
+      table.string('description').notNullable()
+      table
+        .integer('id_product')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('products')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
       table.timestamps()
     })
   }
