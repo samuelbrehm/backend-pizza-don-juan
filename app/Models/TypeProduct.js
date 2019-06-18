@@ -4,12 +4,12 @@
 const Model = use('Model')
 
 class TypeProduct extends Model {
-  product () {
-    return this.belongsTo('App/Models/Product')
-  }
-
   sizes () {
     return this.belongsToMany('App/Models/Size').pivotModel('App/Models/Price')
+  }
+
+  product () {
+    return this.belongsTo('App/Models/Product', 'id_product', 'id')
   }
 }
 
