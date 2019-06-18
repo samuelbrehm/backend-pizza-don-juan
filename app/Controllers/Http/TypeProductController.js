@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const TypeProduct = use('App/Models/TypeProduct')
+
 /**
  * Resourceful controller for interacting with typeproducts
  */
@@ -17,19 +19,13 @@ class TypeProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index ({ params }) {
+    const typesProducts = await TypeProduct.query()
+      .where('id_product', params.products_id)
+      .with('product')
+      .fetch()
 
-  /**
-   * Render a form to be used for creating a new typeproduct.
-   * GET typeproducts/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return typesProducts
   }
 
   /**
@@ -40,7 +36,15 @@ class TypeProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ params, request }) {
+    const data = request.only(['description'])
+
+    const typesProducts = await TypeProduct.create({
+      ...data,
+      id_product: params.products_id
+    })
+
+    return typesProducts
   }
 
   /**
@@ -52,19 +56,10 @@ class TypeProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params }) {
+    const typesProducts = await TypeProduct.findOrFail(params.id)
 
-  /**
-   * Render a form to update an existing typeproduct.
-   * GET typeproducts/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return typesProducts
   }
 
   /**
@@ -75,7 +70,15 @@ class TypeProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const typesProducts = await TypeProduct.findOrFail(params.id)
+    const data = request.only(['description'])
+
+    typesProducts.merge(data)
+
+    await typesProducts.save()
+
+    return typesProducts
   }
 
   /**
@@ -86,7 +89,10 @@ class TypeProductController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const typesProducts = await TypeProduct.findOrFail(params.id)
+
+    await typesProducts.delete()
   }
 }
 
