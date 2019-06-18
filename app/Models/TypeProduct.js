@@ -9,7 +9,7 @@ class TypeProduct extends Model {
   }
 
   sizes () {
-    return this.hasMany('App/Models/Size')
+    return this.belongsToMany('App/Models/Size').pivotModel('App/Models/Price')
   }
 }
 
