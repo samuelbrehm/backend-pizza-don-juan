@@ -8,9 +8,7 @@ class UserController {
     const data = request.only(['username', 'email', 'password', 'type'])
     const addresses = request.input('addresses')
 
-    console.log(`Primeiro type ${data.type}`)
     data.type = request.typeUser
-    console.log(`Segundo type ${data.type}`)
 
     const trx = await Database.beginTransaction()
 
