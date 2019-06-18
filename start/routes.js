@@ -18,3 +18,7 @@ const Route = use('Route')
 
 Route.post('users', 'UserController.store').middleware('user')
 Route.post('sessions', 'SessionController.store')
+
+Route.group(() => {
+  Route.resource('products', 'ProductController').apiOnly()
+}).middleware(['auth'])
