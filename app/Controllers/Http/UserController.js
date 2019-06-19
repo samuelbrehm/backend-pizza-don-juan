@@ -19,6 +19,15 @@ class UserController {
 
     return user
   }
+
+  async show ({ auth }) {
+    const orders = await auth.user
+      .orders()
+      .with('products')
+      .fetch()
+
+    return orders
+  }
 }
 
 module.exports = UserController

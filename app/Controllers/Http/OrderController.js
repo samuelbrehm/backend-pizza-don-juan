@@ -22,6 +22,7 @@ class OrderController {
   async index () {
     const orders = await Order.query()
       .with('user')
+      .with('products')
       .fetch()
 
     return orders
