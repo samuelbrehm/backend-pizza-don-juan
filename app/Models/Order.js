@@ -9,9 +9,13 @@ class Order extends Model {
   }
 
   products () {
-    return this.belongsToMany('App/Models/Product').pivotModel(
-      'App/Models/ItemsOrder'
-    )
+    return this.belongsToMany(
+      'App/Models/Product',
+      'id_order',
+      'id_product',
+      'id',
+      'id'
+    ).pivotModel('App/Models/ItemsOrder')
   }
 }
 
