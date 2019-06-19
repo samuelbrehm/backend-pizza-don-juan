@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Size = use('App/Models/Size')
+
 /**
  * Resourceful controller for interacting with sizes
  */
@@ -17,19 +19,12 @@ class SizeController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index () {
+    const sizes = await Size.query()
+      .with('price')
+      .fetch()
 
-  /**
-   * Render a form to be used for creating a new size.
-   * GET sizes/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return sizes
   }
 
   /**
@@ -40,7 +35,18 @@ class SizeController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
+    const data = request.only(['unity'])
+    const price = request.only(['price', 'id_type_product'])
+
+    const size = await Size.create(data)
+    await size.price().create({
+      id_size: size.id,
+      price: price.price,
+      id_type_product: price.id_type_product
+    })
+
+    return size
   }
 
   /**
@@ -52,19 +58,10 @@ class SizeController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params }) {
+    const size = await Size.findOrFail(params.id)
 
-  /**
-   * Render a form to update an existing size.
-   * GET sizes/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+    return size
   }
 
   /**
@@ -75,7 +72,21 @@ class SizeController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
+    const size = await Size.findOrFail(params.id)
+    const data = request.only(['unity', 'price', 'id_type_product'])
+
+    size.merge({ unity: data.unity })
+
+    await size
+      .price()
+      .where('id_size', params.id)
+      .where('id_type_product', data.id_type_product)
+      .update({ price: data.price })
+
+    await size.save()
+
+    return size
   }
 
   /**
@@ -86,7 +97,10 @@ class SizeController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
+    const size = await Size.findOrFail(params.id)
+
+    await size.delete()
   }
 }
 

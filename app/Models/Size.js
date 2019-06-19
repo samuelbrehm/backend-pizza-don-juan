@@ -4,10 +4,8 @@
 const Model = use('Model')
 
 class Size extends Model {
-  prices () {
-    return this.belongsToMany('App/Models/TypeProduct').pivotModel(
-      'App/Models/Price'
-    )
+  price () {
+    return this.hasMany('App/Models/Price', 'id', 'id_size')
   }
 }
 

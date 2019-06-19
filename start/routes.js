@@ -22,4 +22,5 @@ Route.post('sessions', 'SessionController.store')
 Route.group(() => {
   Route.resource('products', 'ProductController').apiOnly()
   Route.resource('products.typeproducts', 'TypeProductController').apiOnly()
+  Route.resource('sizes', 'SizeController').apiOnly()
 }).middleware(['auth'])
