@@ -17,6 +17,8 @@
 const Route = use('Route')
 
 Route.post('users', 'UserController.store').middleware('user')
+Route.get('userorders', 'UserController.show').middleware('auth')
+
 Route.post('sessions', 'SessionController.store')
 
 Route.group(() => {
