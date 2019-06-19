@@ -36,7 +36,7 @@ class OrderController {
    * @param {Response} ctx.response
    */
   async store ({ request, auth }) {
-    const data = request.only(['date']) // adicionar ao request observações
+    const data = request.only(['date', 'isAttended', 'comments']) // adicionar ao request observações
 
     const products = request.input('products').map(el => el.id_product)
 
@@ -69,7 +69,16 @@ class OrderController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {}
+  async update ({ params, request }) {
+    const order = await Order.findOrFail(params.id)
+    const isAttended = request.only(['isAttended'])
+
+    order.merge(isAttended)
+
+    await order.save()
+
+    return order
+  }
 
   /**
    * Delete a order with id.
