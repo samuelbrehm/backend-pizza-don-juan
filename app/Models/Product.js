@@ -5,13 +5,17 @@ const Model = use('Model')
 
 class Product extends Model {
   orders () {
-    return this.belongsToMany('App/Models/Order').pivotModel(
-      'App/Models/ItemsOrder'
-    )
+    return this.belongsToMany(
+      'App/Models/Order',
+      'id_product',
+      'id_order',
+      'id',
+      'id'
+    ).pivotModel('App/Models/ItemsOrder')
   }
 
   typeProducts () {
-    return this.hasMany('App/Models/TypeProduct')
+    return this.hasMany('App/Models/TypeProduct', 'id', 'id_product')
   }
 }
 
