@@ -43,6 +43,7 @@ class OrderController {
 
     const order = await Order.create({ ...data, user_id: auth.user.id })
     await order.products().attach(products)
+    order.products = await order.products().fetch()
 
     return order
   }
