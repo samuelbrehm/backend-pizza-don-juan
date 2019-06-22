@@ -4,6 +4,7 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Ws = use('Ws')
 const Order = use('App/Models/Order')
 
 /**
@@ -44,6 +45,12 @@ class OrderController {
     const order = await Order.create({ ...data, user_id: auth.user.id })
     await order.products().attach(products)
     order.products = await order.products().fetch()
+
+    const topic = Ws.getChannel('notifications').topic('notifications')
+
+    if (topic) {
+      topic.broadcast('new:order')
+    }
 
     return order
   }
